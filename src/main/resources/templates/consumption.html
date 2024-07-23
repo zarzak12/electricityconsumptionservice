@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Consommation d'Électricité</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-5">Consommation d'Électricité</h1>
+    <div class="card mt-3">
+        <div class="card-body">
+            <h5 class="card-title">Consommation Quotidienne</h5>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Jour</th>
+                    <th>Consommation (kWh)</th>
+                    <th>Tendance</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="consumption, iterStat : ${dailyConsumptions}">
+                    <td th:text="${iterStat.index + 1}"></td>
+                    <td th:text="${consumption}"></td>
+                    <td th:if="${iterStat.index > 0}" th:text="${trends[iterStat.index - 1]}"></td>
+                    <td th:if="${iterStat.index == 0}">N/A</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card mt-3">
+        <div class="card-body">
+            <h5 class="card-title">L'API Enedis est actuellement indisponible.</h5>
+            <p class="card-text">Veuillez télécharger un fichier CSV pour afficher les données de consommation.</p>
+            <form th:action="@{/upload-csv}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="file">Fichier CSV</label>
+                    <input type="file" class="form-control" id="file" name="file">
+                </div>
+                <button type="submit" class="btn btn-primary">Télécharger</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
