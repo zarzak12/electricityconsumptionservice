@@ -34,8 +34,6 @@ public class ConsumptionService {
         trends.clear();
         dates.clear();
 
-        double averageConsumption = calculateAverageConsumption();
-
         boolean isFirstTwoLines = true; // Ignorer les deux premières lignes
         for (String[] line : data) {
             if (isFirstTwoLines) {
@@ -49,9 +47,20 @@ public class ConsumptionService {
             dates.add(line[0]);
             double consumption = Double.parseDouble(line[1].replace(",", "."));
             dailyConsumptions.add(consumption);
+        }
+        calculateTrends();
+    }
 
-            if (dailyConsumptions.size() > 1) {
-                trends.add(consumption > averageConsumption ? "increase" : "decrease");
+    private void calculateTrends() {
+        double averageConsumption = calculateAverageConsumption();
+
+        for (Double consumption : dailyConsumptions) {
+            if (consumption > averageConsumption) {
+                trends.add("increase");
+            } else if (consumption < averageConsumption) {
+                trends.add("decrease");
+            } else {
+                trends.add("no change");
             }
         }
     }

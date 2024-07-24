@@ -34,7 +34,7 @@ public class ConsumptionController {
         List<String> dates = consumptionService.getConsumptionDates();
         Double averageConsumption = consumptionService.calculateAverageConsumption();
         logger.info("Daily Consumptions: " + dailyConsumptions);
-        logger.info("Average Consumptions: " + averageConsumption);
+        logger.info("Average Consumption: " + averageConsumption);
         logger.info("Trends: " + trends);
         model.addAttribute("dailyConsumptions", dailyConsumptions);
         model.addAttribute("trends", trends);
@@ -60,8 +60,8 @@ public class ConsumptionController {
             e.printStackTrace();
         }
 
-        consumptionService.saveConsumptionData(data);
         consumptionService.setMonthlyPayment(monthlyPayment);
+        consumptionService.saveConsumptionData(data);
         logger.info("Data uploaded: " + data);
         return "redirect:/consumption";
     }
