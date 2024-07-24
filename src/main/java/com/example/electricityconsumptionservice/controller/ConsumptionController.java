@@ -32,17 +32,20 @@ public class ConsumptionController {
         List<Double> dailyConsumptions = consumptionService.getDailyConsumptions();
         List<String> trends = consumptionService.getDailyTrends();
         List<String> dates = consumptionService.getConsumptionDates();
+        Double averageConsumption = consumptionService.calculateAverageConsumption();
         logger.info("Daily Consumptions: " + dailyConsumptions);
+        logger.info("Average Consumptions: " + averageConsumption);
         logger.info("Trends: " + trends);
         model.addAttribute("dailyConsumptions", dailyConsumptions);
         model.addAttribute("trends", trends);
         model.addAttribute("dates", dates);
+        model.addAttribute("averageConsumption", averageConsumption);
 
         return "consumption";
     }
 
     @PostMapping("/upload-csv")
-    public String uploadCSV(@RequestParam("file") MultipartFile file, Model model) {
+    public String uploadCSV(@RequestParam("file") MultipartFile file, @RequestParam("monthlyPayment") double monthlyPayment, Model model) {
         List<String[]> data = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String line;
@@ -58,6 +61,7 @@ public class ConsumptionController {
         }
 
         consumptionService.saveConsumptionData(data);
+        consumptionService.setMonthlyPayment(monthlyPayment);
         logger.info("Data uploaded: " + data);
         return "redirect:/consumption";
     }

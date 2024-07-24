@@ -11,6 +11,7 @@ public class ConsumptionService {
     private List<Double> dailyConsumptions = new ArrayList<>();
     private List<String> trends = new ArrayList<>();
     private List<String> dates = new ArrayList<>();
+    private double monthlyPayment;
 
     public boolean isApiAvailable() {
         return false;
@@ -33,6 +34,8 @@ public class ConsumptionService {
         trends.clear();
         dates.clear();
 
+        double averageConsumption = calculateAverageConsumption();
+
         boolean isFirstTwoLines = true; // Ignorer les deux premières lignes
         for (String[] line : data) {
             if (isFirstTwoLines) {
@@ -48,13 +51,18 @@ public class ConsumptionService {
             dailyConsumptions.add(consumption);
 
             if (dailyConsumptions.size() > 1) {
-                double previousConsumption = dailyConsumptions.get(dailyConsumptions.size() - 2);
-                trends.add(consumption > previousConsumption ? "increase" : "decrease");
+                trends.add(consumption > averageConsumption ? "increase" : "decrease");
             }
         }
+    }
 
-        if (!dailyConsumptions.isEmpty()) {
-            trends.add(0, "N/A");
-        }
+    public void setMonthlyPayment(double monthlyPayment) {
+        this.monthlyPayment = monthlyPayment;
+    }
+
+    public double calculateAverageConsumption() {
+        double tarifBleu = 0.1546; // Example rate per kWh
+        double totalMonthlyConsumption = monthlyPayment / tarifBleu;
+        return totalMonthlyConsumption / 30; // average daily consumption
     }
 }
