@@ -2,8 +2,12 @@ package com.example.electricityconsumptionservice.service;
 
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ConsumptionService {
@@ -73,5 +77,37 @@ public class ConsumptionService {
         double tarifBleu = 0.1546; // Example rate per kWh
         double totalMonthlyConsumption = monthlyPayment / tarifBleu;
         return totalMonthlyConsumption / 30; // average daily consumption
+    }
+
+    public Map<String, Double> getMonthlyConsumptions() {
+        Map<String, Double> monthlyConsumptions = new LinkedHashMap<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        for (int i = 0; i < dates.size(); i++) {
+            LocalDate date = LocalDate.parse(dates.get(i), formatter);
+            String month = date.getMonth().toString() + " " + date.getYear();
+            double consumption = dailyConsumptions.get(i);
+
+            monthlyConsumptions.put(month, monthlyConsumptions.getOrDefault(month, 0.0) + consumption);
+        }
+
+        return monthlyConsumptions;
+    }
+
+    public Map<String, String> getMonthlyTrends() {
+        Map<String, Double> monthlyConsumptions = getMonthlyConsumptions();
+        Map<String, String> monthlyTrends = new LinkedHashMap<>();
+        double averageMonthlyConsumption = calculateAverageConsumption() * 30; // Average monthly consumption
+
+        for (String month : monthlyConsumptions.keySet()) {
+            double consumption = monthlyConsumptions.get(month);
+            if (consumption > averageMonthlyConsumption) {
+                monthlyTrends.put(month, "increase");
+            } else {
+                monthlyTrends.put(month, "decrease");
+            }
+        }
+
+        return monthlyTrends;
     }
 }

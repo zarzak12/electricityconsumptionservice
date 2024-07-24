@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @Controller
@@ -33,13 +34,21 @@ public class ConsumptionController {
         List<String> trends = consumptionService.getDailyTrends();
         List<String> dates = consumptionService.getConsumptionDates();
         Double averageConsumption = consumptionService.calculateAverageConsumption();
+        Double averageMonthlyConsumption = consumptionService.calculateAverageConsumption()*30;
+        Map<String, Double> monthlyConsumptions = consumptionService.getMonthlyConsumptions();
+        Map<String, String> monthlyTrends = consumptionService.getMonthlyTrends();
         logger.info("Daily Consumptions: " + dailyConsumptions);
         logger.info("Average Consumption: " + averageConsumption);
         logger.info("Trends: " + trends);
+        logger.info("Monthly Consumptions: " + monthlyConsumptions);
+        logger.info("Monthly Average Consumption: " + averageMonthlyConsumption);
+        logger.info("Monthly Trends: " + monthlyTrends);
         model.addAttribute("dailyConsumptions", dailyConsumptions);
         model.addAttribute("trends", trends);
         model.addAttribute("dates", dates);
         model.addAttribute("averageConsumption", averageConsumption);
+        model.addAttribute("monthlyConsumptions", monthlyConsumptions);
+        model.addAttribute("monthlyTrends", monthlyTrends);
 
         return "consumption";
     }
