@@ -31,10 +31,12 @@ public class ConsumptionController {
 
         List<Double> dailyConsumptions = consumptionService.getDailyConsumptions();
         List<String> trends = consumptionService.getDailyTrends();
+        List<String> dates = consumptionService.getConsumptionDates();
         logger.info("Daily Consumptions: " + dailyConsumptions);
         logger.info("Trends: " + trends);
         model.addAttribute("dailyConsumptions", dailyConsumptions);
         model.addAttribute("trends", trends);
+        model.addAttribute("dates", dates);
 
         return "consumption";
     }
@@ -44,7 +46,10 @@ public class ConsumptionController {
         List<String[]> data = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String line;
+            int lineNumber = 0;
             while ((line = br.readLine()) != null) {
+                lineNumber++;
+                if (lineNumber <= 2) continue; // Ignorer les deux premières lignes
                 String[] values = line.split(";");
                 data.add(values);
             }

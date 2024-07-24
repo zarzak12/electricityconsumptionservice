@@ -9,16 +9,11 @@ import java.util.List;
 public class ConsumptionService {
 
     private List<Double> dailyConsumptions = new ArrayList<>();
-    private List<String> dailyTrends = new ArrayList<>();
-    private boolean apiAvailable = false;
+    private List<String> trends = new ArrayList<>();
+    private List<String> dates = new ArrayList<>();
 
     public boolean isApiAvailable() {
-        return apiAvailable;
-    }
-
-    public double getDailyConsumption() {
-        // Implémentez l'appel API ici pour obtenir la consommation quotidienne
-        return 0;
+        return false;
     }
 
     public List<Double> getDailyConsumptions() {
@@ -26,33 +21,40 @@ public class ConsumptionService {
     }
 
     public List<String> getDailyTrends() {
-        return dailyTrends;
+        return trends;
+    }
+
+    public List<String> getConsumptionDates() {
+        return dates;
     }
 
     public void saveConsumptionData(List<String[]> data) {
         dailyConsumptions.clear();
-        dailyTrends.clear();
+        trends.clear();
+        dates.clear();
 
-        for (String[] row : data) {
-            if (row.length >= 2) {
-                try {
-                    double consumption = Double.parseDouble(row[1]);
-                    dailyConsumptions.add(consumption);
-
-                    if (dailyConsumptions.size() > 1) {
-                        double previousConsumption = dailyConsumptions.get(dailyConsumptions.size() - 2);
-                        if (consumption > previousConsumption) {
-                            dailyTrends.add("increase");
-                        } else if (consumption < previousConsumption) {
-                            dailyTrends.add("decrease");
-                        } else {
-                            dailyTrends.add("no change");
-                        }
-                    }
-                } catch (NumberFormatException e) {
-                    // Ignore invalid number format
+        boolean isFirstTwoLines = true; // Ignorer les deux premières lignes
+        for (String[] line : data) {
+            if (isFirstTwoLines) {
+                if (data.indexOf(line) < 2) {
+                    continue;
                 }
+                isFirstTwoLines = false;
             }
+
+            if (line.length < 2) continue;
+            dates.add(line[0]);
+            double consumption = Double.parseDouble(line[1].replace(",", "."));
+            dailyConsumptions.add(consumption);
+
+            if (dailyConsumptions.size() > 1) {
+                double previousConsumption = dailyConsumptions.get(dailyConsumptions.size() - 2);
+                trends.add(consumption > previousConsumption ? "increase" : "decrease");
+            }
+        }
+
+        if (!dailyConsumptions.isEmpty()) {
+            trends.add(0, "N/A");
         }
     }
 }

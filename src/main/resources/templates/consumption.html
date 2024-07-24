@@ -5,33 +5,12 @@
     <title>Consommation d'Électricité</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- Utilisez Font Awesome 5 -->
 </head>
 <body>
 <div class="container">
     <h1 class="mt-5">Consommation d'Électricité</h1>
-    <div class="card mt-3">
-        <div class="card-body">
-            <h5 class="card-title">Consommation Quotidienne</h5>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Jour</th>
-                    <th>Consommation (kWh)</th>
-                    <th>Tendance</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="consumption, iterStat : ${dailyConsumptions}">
-                    <td th:text="${iterStat.index + 1}"></td>
-                    <td th:text="${consumption}"></td>
-                    <td th:if="${iterStat.index > 0}" th:text="${trends[iterStat.index - 1]}"></td>
-                    <td th:if="${iterStat.index == 0}">N/A</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="card mt-3">
+    <div class="card mt-3" th:if="${apiUnavailable}">
         <div class="card-body">
             <h5 class="card-title">L'API Enedis est actuellement indisponible.</h5>
             <p class="card-text">Veuillez télécharger un fichier CSV pour afficher les données de consommation.</p>
@@ -42,6 +21,31 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Télécharger</button>
             </form>
+        </div>
+    </div>
+    <div class="card mt-3">
+        <div class="card-body">
+            <h5 class="card-title">Consommation Quotidienne</h5>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Consommation (kWh)</th>
+                    <th>Tendance</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="consumption, iterStat : ${dailyConsumptions}">
+                    <td th:text="${dates[iterStat.index]}"></td>
+                    <td th:text="${consumption}"></td>
+                    <td th:if="${iterStat.index > 0}">
+                        <span th:text="${trends[iterStat.index - 1]}"></span>
+                        <i th:classappend="${trends[iterStat.index - 1] == 'increase' ? 'fas fa-arrow-up text-danger' : 'fas fa-arrow-down text-success'}"></i>
+                    </td>
+                    <td th:if="${iterStat.index == 0}">N/A</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
