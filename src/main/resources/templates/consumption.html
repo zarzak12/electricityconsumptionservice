@@ -45,7 +45,7 @@
                 <tr th:each="consumption, iterStat : ${dailyConsumptions}">
                     <td th:text="${dates[iterStat.index]}"></td>
                     <td th:text="${consumption}"></td>
-                    <td th:if="${iterStat.index > 0}">
+                    <td>
                         <span th:text="${trends[iterStat.index ]}"></span>
                         <i th:classappend="${trends[iterStat.index ] == 'increase' ? 'fas fa-arrow-up text-danger' : 'fas fa-arrow-down text-success'}"></i>
                     </td>
