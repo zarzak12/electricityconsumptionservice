@@ -73,10 +73,35 @@ public class ConsumptionService {
         this.monthlyPayment = monthlyPayment;
     }
 
+    /**
+     * permet de calculer le montant par mois
+     * @return montant mensuel
+     */
     public double calculateAverageConsumption() {
         double tarifBleu = 0.1546; // Example rate per kWh
         double totalMonthlyConsumption = monthlyPayment / tarifBleu;
         return totalMonthlyConsumption / 30; // average daily consumption
+    }
+
+    /**
+     * Permet de calculer le montant total annuel en fonction de la mensualité EDF
+     * @return prix annuel EDF
+     */
+    public double calculateAnnualConsumptionEDF() {
+        double totalAnnualConsumption = monthlyPayment * 12;
+        return totalAnnualConsumption; // Total Annual consumption
+    }
+
+    /**
+     * Permet de calculer le prix en fonction de la consommation journaliere
+     * @param dailyConsumptions
+     * @return prix par jour en fonction de la consommation
+     */
+    public double calculateDailyPriceConsumption(Double dailyConsumptions) {
+        double tarifBleu = 0.1546; // Example rate per kWh
+        double abonnement = 0.52;
+        double priceDailyConsumption = (dailyConsumptions * tarifBleu) + abonnement;
+        return priceDailyConsumption; // Total Annual consumption
     }
 
     public Map<String, Double> getMonthlyConsumptions() {

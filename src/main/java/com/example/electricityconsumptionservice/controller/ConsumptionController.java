@@ -14,7 +14,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 @Controller
@@ -34,44 +33,62 @@ public class ConsumptionController {
         List<String> trends = consumptionService.getDailyTrends();
         List<String> dates = consumptionService.getConsumptionDates();
         Double averageConsumption = consumptionService.calculateAverageConsumption();
-        Double averageMonthlyConsumption = consumptionService.calculateAverageConsumption()*30;
-        Map<String, Double> monthlyConsumptions = consumptionService.getMonthlyConsumptions();
-        Map<String, String> monthlyTrends = consumptionService.getMonthlyTrends();
-        logger.info("Daily Consumptions: " + dailyConsumptions);
-        logger.info("Average Consumption: " + averageConsumption);
-        logger.info("Trends: " + trends);
-        logger.info("Monthly Consumptions: " + monthlyConsumptions);
-        logger.info("Monthly Average Consumption: " + averageMonthlyConsumption);
-        logger.info("Monthly Trends: " + monthlyTrends);
         model.addAttribute("dailyConsumptions", dailyConsumptions);
         model.addAttribute("trends", trends);
         model.addAttribute("dates", dates);
         model.addAttribute("averageConsumption", averageConsumption);
-        model.addAttribute("monthlyConsumptions", monthlyConsumptions);
-        model.addAttribute("monthlyTrends", monthlyTrends);
+
+        model.addAttribute("monthlyConsumptions", consumptionService.getMonthlyConsumptions());
+        model.addAttribute("monthlyTrends", consumptionService.getMonthlyTrends());
 
         return "consumption";
     }
 
     @PostMapping("/upload-csv")
     public String uploadCSV(@RequestParam("file") MultipartFile file, @RequestParam("monthlyPayment") double monthlyPayment, Model model) {
+        if (file.isEmpty() || !file.getOriginalFilename().endsWith(".csv")) {
+            model.addAttribute("errorMessage", "Veuillez télécharger un fichier CSV.");
+            return getConsumption(model);
+        }
+
         List<String[]> data = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String line;
             int lineNumber = 0;
             while ((line = br.readLine()) != null) {
                 lineNumber++;
-                if (lineNumber <= 2) continue; // Ignorer les deux premières lignes
-                String[] values = line.split(";");
-                data.add(values);
+                if (lineNumber == 2 && !line.equals("R�capitulatif de ma consommation")) {
+                    model.addAttribute("errorMessage", "Le fichier CSV n'est pas au bon format. Veuillez vérifier le contenu et réessayer.");
+                    return getConsumption(model);
+                }
+                if (lineNumber == 4 && !line.equals("Date de consommation;Consommation (kWh);Nature de la donn�e")) {
+                    model.addAttribute("errorMessage", "Le fichier CSV n'est pas au bon format. Veuillez vérifier le contenu et réessayer.");
+                    return getConsumption(model);
+                }
+                if (lineNumber > 4) {
+                    String[] values = line.split(";");
+                    if (values.length < 3 && !line.equals("")) {
+                        model.addAttribute("errorMessage", "Le fichier CSV n'est pas au bon format. Chaque ligne doit contenir au moins 3 colonnes.");
+                        return getConsumption(model);
+                    }
+                    data.add(values);
+                }
             }
         } catch (Exception e) {
+            model.addAttribute("errorMessage", "Une erreur est survenue lors de la lecture du fichier CSV. Veuillez réessayer.");
             e.printStackTrace();
+            return getConsumption(model);
         }
 
-        consumptionService.setMonthlyPayment(monthlyPayment);
-        consumptionService.saveConsumptionData(data);
-        logger.info("Data uploaded: " + data);
+        try {
+            consumptionService.setMonthlyPayment(monthlyPayment);
+            consumptionService.saveConsumptionData(data);
+            logger.info("Data uploaded: " + data);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return getConsumption(model);
+        }
+
         return "redirect:/consumption";
     }
 }

@@ -10,6 +10,9 @@
 <body>
 <div class="container">
     <h1 class="mt-5">Consommation d'Électricité</h1>
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <span th:text="${errorMessage}"></span>
+    </div>
     <div class="card mt-3" th:if="${apiUnavailable}">
         <div class="card-body">
             <h5 class="card-title">L'API Enedis est actuellement indisponible.</h5>
@@ -29,6 +32,9 @@
     </div>
     <div th:if="${averageConsumption != null}">
         <h5 class="mt-3">Moyenne de Consommation Journalière: <span th:text="${averageConsumption}"></span> kWh</h5>
+    </div>
+    <div th:if="${annualAmount != null}">
+        <h5 class="mt-3">Montant Annuel: <span th:text="${annualAmount}"></span> €</h5>
     </div>
     <div class="card mt-3">
         <div class="card-body">
