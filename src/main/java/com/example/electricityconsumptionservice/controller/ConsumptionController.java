@@ -41,6 +41,13 @@ public class ConsumptionController {
         model.addAttribute("monthlyConsumptions", consumptionService.getMonthlyConsumptions());
         model.addAttribute("monthlyTrends", consumptionService.getMonthlyTrends());
 
+        // Calculer le montant annuel et l'ajouter au modèle
+        double annualAmount = consumptionService.calculateAnnualConsumptionEDF();
+        model.addAttribute("annualAmount", annualAmount);
+
+        // Ajouter les prix quotidiens au modèle
+        model.addAttribute("dailyPrices", consumptionService.getConsumptionPrices());
+
         return "consumption";
     }
 
@@ -88,6 +95,10 @@ public class ConsumptionController {
             model.addAttribute("errorMessage", e.getMessage());
             return getConsumption(model);
         }
+
+        // Calculer le montant annuel et l'ajouter au modèle
+        double annualAmount = consumptionService.calculateAnnualConsumptionEDF();
+        model.addAttribute("annualAmount", annualAmount);
 
         return "redirect:/consumption";
     }

@@ -15,6 +15,7 @@ public class ConsumptionService {
     private List<Double> dailyConsumptions = new ArrayList<>();
     private List<String> trends = new ArrayList<>();
     private List<String> dates = new ArrayList<>();
+    private List<Double> prices = new ArrayList<>();
     private double monthlyPayment;
 
     public boolean isApiAvailable() {
@@ -31,6 +32,11 @@ public class ConsumptionService {
 
     public List<String> getConsumptionDates() {
         return dates;
+    }
+
+    public List<Double> getConsumptionPrices() {
+        getDailyPriceConsumptions();
+        return prices;
     }
 
     public void saveConsumptionData(List<String[]> data) {
@@ -74,8 +80,8 @@ public class ConsumptionService {
     }
 
     /**
-     * permet de calculer le montant par mois
-     * @return montant mensuel
+     * Calcul du montant moyen de consommation journalière
+     * @return consommation journalière moyenne
      */
     public double calculateAverageConsumption() {
         double tarifBleu = 0.1546; // Example rate per kWh
@@ -84,24 +90,46 @@ public class ConsumptionService {
     }
 
     /**
-     * Permet de calculer le montant total annuel en fonction de la mensualité EDF
-     * @return prix annuel EDF
+     * Calcul du montant annuel total en fonction de la mensualité EDF
+     * @return montant annuel total
      */
     public double calculateAnnualConsumptionEDF() {
-        double totalAnnualConsumption = monthlyPayment * 12;
-        return totalAnnualConsumption; // Total Annual consumption
+        return monthlyPayment * 12; // Total Annual consumption
     }
 
     /**
-     * Permet de calculer le prix en fonction de la consommation journaliere
-     * @param dailyConsumptions
+     * Calcul du prix journalier en fonction de la consommation
+     * @param dailyConsumption consommation journalière
      * @return prix par jour en fonction de la consommation
      */
-    public double calculateDailyPriceConsumption(Double dailyConsumptions) {
+    public double calculateDailyPriceConsumption(Double dailyConsumption) {
         double tarifBleu = 0.1546; // Example rate per kWh
         double abonnement = 0.52;
-        double priceDailyConsumption = (dailyConsumptions * tarifBleu) + abonnement;
-        return priceDailyConsumption; // Total Annual consumption
+        return (dailyConsumption * tarifBleu) + abonnement; // prix journalier total
+    }
+
+    /**
+     * Calculer le prix quotidien de la consommation
+     * @return Map des prix quotidiens
+     */
+    /*public Map<String, Double> getDailyPriceConsumptions() {
+        Map<String, Double> dailyPrices = new LinkedHashMap<>();
+        for (int i = 0; i < dailyConsumptions.size(); i++) {
+            String date = dates.get(i);
+            double dailyConsumption = dailyConsumptions.get(i);
+            double dailyPrice = calculateDailyPriceConsumption(dailyConsumption);
+            dailyPrices.put(date, dailyPrice);
+        }
+        return dailyPrices;
+    }*/
+
+    public void getDailyPriceConsumptions() {
+        Map<String, Double> dailyPrices = new LinkedHashMap<>();
+        for (int i = 0; i < dailyConsumptions.size(); i++) {
+            double dailyConsumption = dailyConsumptions.get(i);
+            double dailyPrice = calculateDailyPriceConsumption(dailyConsumption);
+            prices.add(dailyPrice);
+        }
     }
 
     public Map<String, Double> getMonthlyConsumptions() {

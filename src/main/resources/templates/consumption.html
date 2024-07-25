@@ -45,6 +45,7 @@
                     <th>Date</th>
                     <th>Consommation (kWh)</th>
                     <th>Tendance</th>
+                    <th>Prix €</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -55,6 +56,7 @@
                         <span th:text="${trends[iterStat.index]}"></span>
                         <i th:classappend="${trends[iterStat.index] == 'increase' ? 'fas fa-arrow-up text-danger' : 'fas fa-arrow-down text-success'}"></i>
                     </td>
+                    <td th:text="${dailyPrices[iterStat.index]}"></td>
                 </tr>
                 </tbody>
             </table>
