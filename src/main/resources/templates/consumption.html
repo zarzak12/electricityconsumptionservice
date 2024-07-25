@@ -45,7 +45,7 @@
                     <th>Date</th>
                     <th>Consommation (kWh)</th>
                     <th>Tendance</th>
-                    <th>Prix €</th>
+                    <th>Prix (€)</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -56,11 +56,14 @@
                         <span th:text="${trends[iterStat.index]}"></span>
                         <i th:classappend="${trends[iterStat.index] == 'increase' ? 'fas fa-arrow-up text-danger' : 'fas fa-arrow-down text-success'}"></i>
                     </td>
-                    <td th:text="${dailyPrices[iterStat.index]}"></td>
+                    <td th:text="${#numbers.formatDecimal(dailyPrices[iterStat.index], 1, 'COMMA', 2, 'POINT')}"></td>
                 </tr>
                 </tbody>
             </table>
         </div>
+    </div>
+    <div th:if="${averageConsumptionMonthly != null}">
+        <h5 class="mt-3">Moyenne de Consommation Mensuelle: <span th:text="${averageConsumptionMonthly}"></span> kWh</h5>
     </div>
     <div class="card mt-3">
         <div class="card-body">
@@ -70,6 +73,7 @@
                 <tr>
                     <th>Mois</th>
                     <th>Consommation (kWh)</th>
+                    <th>Prix Total (€)</th>
                     <th>Tendance</th>
                 </tr>
                 </thead>
@@ -77,6 +81,7 @@
                 <tr th:each="entry : ${monthlyConsumptions.entrySet()}">
                     <td th:text="${entry.key}"></td>
                     <td th:text="${entry.value}"></td>
+                    <td th:text="${#numbers.formatDecimal(monthlyPrices[entry.key], 1, 'COMMA', 2, 'POINT')}"></td>
                     <td>
                         <span th:text="${monthlyTrends[entry.key]}"></span>
                         <i th:classappend="${monthlyTrends[entry.key] == 'increase' ? 'fas fa-arrow-up text-danger' : 'fas fa-arrow-down text-success'}"></i>

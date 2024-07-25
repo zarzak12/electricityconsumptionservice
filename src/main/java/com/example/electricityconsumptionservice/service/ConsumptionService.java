@@ -90,6 +90,16 @@ public class ConsumptionService {
     }
 
     /**
+     * Calcul du montant moyen de consommation journalière
+     * @return consommation journalière moyenne
+     */
+    public double calculateAverageConsumptionMonthly() {
+        double tarifBleu = 0.1546; // Example rate per kWh
+        double totalMonthlyConsumption = monthlyPayment / tarifBleu;
+        return totalMonthlyConsumption; // average daily consumption
+    }
+
+    /**
      * Calcul du montant annuel total en fonction de la mensualité EDF
      * @return montant annuel total
      */

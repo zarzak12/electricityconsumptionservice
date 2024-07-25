@@ -12,8 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @Controller
@@ -48,7 +52,61 @@ public class ConsumptionController {
         // Ajouter les prix quotidiens au modèle
         model.addAttribute("dailyPrices", consumptionService.getConsumptionPrices());
 
+        // Calcul des prix quotidiens
+        List<Double> prices = new ArrayList<>();
+        for (double consumption : dailyConsumptions) {
+            double price = calculateDailyPriceConsumption(consumption);
+            prices.add(price);
+        }
+
+        // Calcul des totaux mensuels
+        Map<String, Double> monthlyConsumptions = new LinkedHashMap<>();
+        Map<String, Double> monthlyPrices = new LinkedHashMap<>();
+        Map<String, String> monthlyTrends = new LinkedHashMap<>();
+        Map<String, List<Double>> monthlyConsumptionsMap = new LinkedHashMap<>();
+        Map<String, List<Double>> monthlyPricesMap = new LinkedHashMap<>();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        for (int i = 0; i < dates.size(); i++) {
+            LocalDate date = LocalDate.parse(dates.get(i), formatter);
+            String month = date.getMonth().name() + " " + date.getYear();
+
+            monthlyConsumptionsMap.putIfAbsent(month, new ArrayList<>());
+            monthlyPricesMap.putIfAbsent(month, new ArrayList<>());
+
+            monthlyConsumptionsMap.get(month).add(dailyConsumptions.get(i));
+            monthlyPricesMap.get(month).add(prices.get(i));
+        }
+
+        for (String month : monthlyConsumptionsMap.keySet()) {
+            double totalConsumption = monthlyConsumptionsMap.get(month).stream().mapToDouble(Double::doubleValue).sum();
+            double totalPrice = monthlyPricesMap.get(month).stream().mapToDouble(Double::doubleValue).sum();
+
+            double averageConsumptionMonthly = consumptionService.calculateAverageConsumptionMonthly();
+
+            monthlyConsumptions.put(month, totalConsumption);
+            monthlyPrices.put(month, totalPrice);
+
+            if (totalConsumption > averageConsumptionMonthly) {
+                monthlyTrends.put(month, "increase");
+            } else {
+                monthlyTrends.put(month, "decrease");
+            }
+        }
+
+        model.addAttribute("monthlyConsumptions", monthlyConsumptions);
+        model.addAttribute("monthlyPrices", monthlyPrices);
+        model.addAttribute("monthlyTrends", monthlyTrends);
+
+        model.addAttribute("averageConsumptionMonthly", consumptionService.calculateAverageConsumptionMonthly());
+
         return "consumption";
+    }
+
+    private double calculateDailyPriceConsumption(double dailyConsumption) {
+        // Remplacez cette logique par votre calcul de prix réel
+        return (dailyConsumption * 0.15) + 0.52;
     }
 
     @PostMapping("/upload-csv")
