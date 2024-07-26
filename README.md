@@ -41,9 +41,9 @@ Date de consommation;Consommation (kWh);Nature de la donn�e
 ```
 
 ## Structure du projet
-ConsumptionController.java : Contrôleur principal qui gère les requêtes HTTP.
-ConsumptionService.java : Service qui contient la logique métier pour traiter les données de consommation.
-resources/templates/consumption.html : Template Thymeleaf pour afficher les données de consommation.
+ConsumptionController.java : Contrôleur principal qui gère les requêtes HTTP.</br>
+ConsumptionService.java : Service qui contient la logique métier pour traiter les données de consommation.</br>
+resources/templates/consumption.html : Template Thymeleaf pour afficher les données de consommation.</br>
 
 ## Développement
 Pour contribuer à ce projet, suivez ces étapes :
