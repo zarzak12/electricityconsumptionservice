@@ -24,7 +24,8 @@ cd electricity-consumption-service
 Construisez et exécutez l'application avec Docker
 
 docker-compose up --build
-Ouvrez votre navigateur et accédez à l'adresse suivante :
+```
+## Ouvrez votre navigateur et accédez à l'adresse suivante :
 
 http://localhost:8080/consumption
 
