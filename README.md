@@ -21,22 +21,24 @@ Ce projet est une application Spring Boot qui permet de suivre et d'analyser la 
 ```bash
 git clone https://github.com/votre-utilisateur/electricity-consumption-service.git
 cd electricity-consumption-service
-Construisez et exécutez l'application avec Docker
-
+```
+2. Construisez et exécutez l'application avec Docker
+```bash
 docker-compose up --build
 ```
-## Ouvrez votre navigateur et accédez à l'adresse suivante :
+3. Ouvrez votre navigateur et accédez à l'adresse suivante :
 
 http://localhost:8080/consumption
 
 ## Format du fichier CSV
 Le fichier CSV doit suivre le format suivant :
-
+```bash
 R�capitulatif de ma consommation
 Date de consommation;Consommation (kWh);Nature de la donn�e
 01/01/2024;12.34;Facturée
 02/01/2024;11.56;Estimée
 ...
+```
 
 ## Structure du projet
 ConsumptionController.java : Contrôleur principal qui gère les requêtes HTTP.
