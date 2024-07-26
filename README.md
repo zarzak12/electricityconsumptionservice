@@ -48,11 +48,11 @@ resources/templates/consumption.html : Template Thymeleaf pour afficher les donn
 ## Développement
 Pour contribuer à ce projet, suivez ces étapes :
 
-## Forkez le dépôt.
-Créez une branche pour votre fonctionnalité (git checkout -b ma-nouvelle-fonctionnalite).
-Commitez vos changements (git commit -am 'Ajoute une nouvelle fonctionnalité').
-Poussez votre branche (git push origin ma-nouvelle-fonctionnalite).
-Créez une Pull Request.
+1. Forkez le dépôt.
+2. Créez une branche pour votre fonctionnalité (git checkout -b ma-nouvelle-fonctionnalite).
+3. Commitez vos changements (git commit -am 'Ajoute une nouvelle fonctionnalité').
+4. Poussez votre branche (git push origin ma-nouvelle-fonctionnalite).
+5. Créez une Pull Request.
 
 ## Auteur
 Votre Derz - Votre Profil GitHub
